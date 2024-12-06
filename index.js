@@ -48,7 +48,7 @@ async function run() {
         // my added visas get operation
         app.get('/visas/:email', async(req, res)=>{
             const email = req.params.email;
-            const query = {email: email};
+            const query = {addByEmail: email};
             const cursor =await allVisaCollection.find(query);
             const result = await cursor.toArray()
             res.send(result)
