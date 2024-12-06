@@ -29,6 +29,7 @@ async function run() {
         //data base collections
         const database = client.db('VisasDB');
         const allVisaCollection = database.collection('allVisas') 
+        const appliedVisaCollection = database.collection('appliedVisas') 
 
         // CRUD operations
         app.get('/visas', async(req, res) => {
@@ -44,6 +45,24 @@ async function run() {
             const result = await allVisaCollection.findOne(query)
             res.send(result)
         })
+        // my added visas get operation
+        app.get('/visas/:email', async(req, res)=>{
+            const email = req.params.email;
+            const query = {email: email};
+            const cursor =await allVisaCollection.find(query);
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
+        // appliedVisas get operation
+        app.get('/appliedVisas/:email', async(req, res)=>{
+            const email = req.params.email;
+            const query = {email: email};
+            const cursor =await appliedVisaCollection.find(query);
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
 
 
         app.post('/visas', async(req, res)=>{
@@ -53,7 +72,13 @@ async function run() {
             res.send(result)
         })
 
-
+        // appliedVisas post operation
+        app.post('/appliedVisas/:email', async(req, res)=>{
+            const newAppliedVisa = req.body;
+            console.log("user applied for visa: ", newAppliedVisa);
+            const result = await appliedVisaCollection.insertOne(newAppliedVisa);
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         // await client.db("admin").command({ ping: 1 });
