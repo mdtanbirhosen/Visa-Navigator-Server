@@ -7,7 +7,6 @@ const app = express();
 
 // middleware
 app.use(cors());
-// app.use (cors({origin:["http://localhost:5173/","https://visa-navigator-client-side.web.app/"]}))
 app.use(express.json());
 
 
