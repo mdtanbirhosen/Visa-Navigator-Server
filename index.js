@@ -7,27 +7,34 @@ const app = express();
 
 // middleware
 app.use(cors());
+// app.use (cors({origin:["http://localhost:5173/","https://visa-navigator-client-side.web.app/"]}))
 app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.q5jln.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+
+
+
+
 const client = new MongoClient(uri, {
     serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
     }
-});
-
-async function run() {
+  });
+  async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+      // Connect the client to the server	(optional starting in v4.7)
+    //   await client.connect();
+      // Send a ping to confirm a successful connection
+    //   await client.db("admin").command({ ping: 1 });
+      console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-        //data base collections
-        const database = client.db('VisasDB');
+
+      const database = client.db('VisasDB');
         const allVisaCollection = database.collection('allVisas')
         const appliedVisaCollection = database.collection('appliedVisas')
 
@@ -64,7 +71,7 @@ async function run() {
         })
 
 
-
+        // post operation for all visa
         app.post('/visas', async (req, res) => {
             const newVisa = req.body;
             console.log("adding new visa", newVisa);
@@ -79,8 +86,8 @@ async function run() {
             const result = await appliedVisaCollection.insertOne(newAppliedVisa);
             res.send(result)
         })
-        
-        
+
+
         // update a visa using patch
         app.patch('/visa', async (req, res) => {
             const id = req.body._id;
@@ -102,37 +109,27 @@ async function run() {
             const result = await allVisaCollection.updateOne(filter, updatedVisa);
             res.send(result)
         })
-        
+
         // delete a visa from my added visas
-        app.delete('/visa/:id',async(req,res)=>{
+        app.delete('/visa/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await allVisaCollection.deleteOne(query);
             res.send(result)
         })
-        // appliedVisas post operation
-        app.delete('/appliedVisas/:id',async(req,res)=>{
+        // appliedVisas delete operation
+        app.delete('/appliedVisas/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await appliedVisaCollection.deleteOne(query);
             res.send(result)
         })
-        
-        // Send a ping to confirm a successful connection
-        // await client.db("admin").command({ ping: 1 });
-        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
+      // Ensures that the client will close when you finish/error
+    //   await client.close();
     }
-}
-run().catch(console.dir);
-
-
-
-
-
-
+  }
+  run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('hello')
 })
@@ -140,3 +137,6 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Visa navigator is running on port : ${port}`);
 })
+
+
+
