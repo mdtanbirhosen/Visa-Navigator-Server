@@ -6,7 +6,10 @@ const port = process.env.PORT || 4000;
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin:['https://visa-navigator.surge.sh','http://localhost:5173','https://visa-navigator-client-beta.vercel.app'],
+  credentials:true
+}));
 app.use(express.json());
 
 
